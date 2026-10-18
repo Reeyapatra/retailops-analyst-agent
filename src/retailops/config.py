@@ -3,6 +3,10 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
+class ConfigError(RuntimeError):
+    """Required configuration is missing."""
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
