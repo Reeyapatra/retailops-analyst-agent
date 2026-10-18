@@ -1,4 +1,4 @@
-# RetailOps Analyst Agent
+﻿# RetailOps Analyst Agent
 
 Multi-agent retail operations assistant built with LangGraph, traced and evaluated with LangSmith. All data is synthetic. Work sample in progress; see the status table for what actually exists.
 
@@ -7,7 +7,7 @@ Multi-agent retail operations assistant built with LangGraph, traced and evaluat
 | Feature | Status |
 |---|---|
 | M0 Setup (layout, tooling, CI skeleton) | Done and verified locally (make test, make lint). CI not yet run on GitHub |
-| M1 Data (generator, DuckDB, manifest) | Not started |
+| M1 Data (generator, DuckDB, manifest, catalog) | Done and verified locally (make data, 25 tests) |
 | M2 SQL agent | Not started |
 | M3 Knowledge + supervisor | Not started |
 | M4 Baseline evaluation | Not started |
@@ -17,6 +17,7 @@ Multi-agent retail operations assistant built with LangGraph, traced and evaluat
 
 ```
 make setup
+make data
 make test
 make lint
 ```

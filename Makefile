@@ -5,7 +5,7 @@ setup:
 	uv sync
 
 data:
-	@echo "make data: not implemented until M1" && exit 1
+	uv run python -m retailops.data.generate --seed 42 --days 180 --orders-per-day 800
 
 ingest:
 	@echo "make ingest: not implemented until M3" && exit 1
