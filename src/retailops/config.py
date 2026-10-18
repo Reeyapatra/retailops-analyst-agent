@@ -1,5 +1,6 @@
 """Environment-driven settings. Variable names match .env.example."""
 
+from dotenv import load_dotenv
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -28,4 +29,7 @@ class Settings(BaseSettings):
 
 
 def get_settings() -> Settings:
+    # Provider SDKs (Anthropic) and LangSmith read os.environ, not our Settings object, so the
+    # .env file must be exported to the process environment. Existing variables win.
+    load_dotenv(override=False)
     return Settings()
