@@ -30,3 +30,4 @@ class SQLAnalystOutput(BaseModel):
     confidence_note: str
     evidence: SQLEvidence | None = None
     attempts: list[SQLAttempt]
+    lookups: int = 0

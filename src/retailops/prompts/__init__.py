@@ -8,11 +8,15 @@ PROMPT_DIR = Path(__file__).parent
 
 # Bump the version (and add the new file) whenever a prompt changes; keep old files for diffing.
 PROMPT_VERSIONS: dict[str, str] = {
-    "sql_generate": "v1",
+    "sql_generate": "v2",
     "sql_summarize": "v1",
     "knowledge_answer": "v1",
     "supervisor_route": "v1",
     "baseline_agent": "v1",
+    "dq_plan": "v1",
+    "dq_summarize": "v1",
+    "investigation_scope": "v1",
+    "investigation_summarize": "v1",
 }
 
 

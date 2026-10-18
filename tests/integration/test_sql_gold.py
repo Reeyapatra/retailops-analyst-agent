@@ -13,8 +13,6 @@ from typing import Any
 
 import pytest
 
-from retailops.data.generate import GenConfig, generate
-from retailops.data.load import build_warehouse
 from retailops.guards.sql_guard import check_sql
 from retailops.tools.sql import SqlRunner
 
@@ -27,10 +25,8 @@ def gold() -> list[dict[str, Any]]:
 
 
 @pytest.fixture(scope="module")
-def runner(tmp_path_factory: pytest.TempPathFactory) -> SqlRunner:
-    path = tmp_path_factory.mktemp("gold") / "w.duckdb"
-    build_warehouse(generate(GenConfig(seed=42, days=180, orders_per_day=800)), path)
-    return SqlRunner(path)
+def runner(full_db: Path) -> SqlRunner:
+    return SqlRunner(full_db)
 
 
 def test_gold_set_shape(gold: list[dict[str, Any]]) -> None:

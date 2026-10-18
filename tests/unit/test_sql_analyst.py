@@ -139,7 +139,7 @@ def test_data_borne_injection_stays_data(db: Path) -> None:
 def test_run_config_carries_trace_metadata() -> None:
     cfg = run_config("sql_analyst", thread_id="t1", scenario_id="gold-01")
     md = cfg["metadata"]
-    assert md["prompt_versions"]["sql_generate"] == "v1"
+    assert md["prompt_versions"]["sql_generate"] == "v2"
     assert md["thread_id"] == "t1" and md["scenario_id"] == "gold-01"
     assert {"git_sha", "model_ids", "app_env"} <= set(md)
     assert "sql_analyst" in cfg["tags"]

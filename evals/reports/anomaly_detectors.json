@@ -1,0 +1,170 @@
+{
+  "what": "deterministic detectors vs ground-truth manifest (no LLM)",
+  "git_sha": "2747b8b",
+  "data_config": {
+    "seed": 42,
+    "days": 180,
+    "orders_per_day": 800
+  },
+  "detector_runtime_s": 0.72,
+  "score": {
+    "n_anomalies": 7,
+    "n_decoys": 2,
+    "n_findings": 8,
+    "recall": 1.0,
+    "scope_accuracy": 1.0,
+    "cause_accuracy": 1.0,
+    "precision": 1.0,
+    "decoy_false_alarms": 0,
+    "decoy_false_alarm_rate": 0.0,
+    "detected_ids": [
+      "A1",
+      "A2",
+      "A3",
+      "A4",
+      "A5",
+      "A6",
+      "A7"
+    ],
+    "missed_ids": [],
+    "scope_wrong_ids": [],
+    "cause_wrong_ids": [],
+    "unexplained_findings": [],
+    "decoy_hit_ids": []
+  },
+  "seed_sweep": [
+    {
+      "recall": 1.0,
+      "precision": 1.0,
+      "scope_accuracy": 1.0,
+      "cause_accuracy": 1.0,
+      "decoy_false_alarms": 0,
+      "missed_ids": [],
+      "unexplained_findings": [],
+      "seed": 1
+    },
+    {
+      "recall": 1.0,
+      "precision": 1.0,
+      "scope_accuracy": 1.0,
+      "cause_accuracy": 1.0,
+      "decoy_false_alarms": 0,
+      "missed_ids": [],
+      "unexplained_findings": [],
+      "seed": 2
+    },
+    {
+      "recall": 1.0,
+      "precision": 1.0,
+      "scope_accuracy": 1.0,
+      "cause_accuracy": 1.0,
+      "decoy_false_alarms": 0,
+      "missed_ids": [],
+      "unexplained_findings": [],
+      "seed": 3
+    },
+    {
+      "recall": 1.0,
+      "precision": 1.0,
+      "scope_accuracy": 1.0,
+      "cause_accuracy": 1.0,
+      "decoy_false_alarms": 0,
+      "missed_ids": [],
+      "unexplained_findings": [],
+      "seed": 4
+    },
+    {
+      "recall": 1.0,
+      "precision": 1.0,
+      "scope_accuracy": 1.0,
+      "cause_accuracy": 1.0,
+      "decoy_false_alarms": 0,
+      "missed_ids": [],
+      "unexplained_findings": [],
+      "seed": 5
+    }
+  ],
+  "findings": [
+    {
+      "id": "duplicate_events:2026-01-31:2026-01-31:PAYMENT_COMPLETED",
+      "kind": "duplicate_events",
+      "start": "2026-01-31",
+      "end": "2026-01-31",
+      "scope": {
+        "event_type": "PAYMENT_COMPLETED"
+      },
+      "count": 872
+    },
+    {
+      "id": "late_events:2026-03-02:2026-03-03:West",
+      "kind": "late_events",
+      "start": "2026-03-02",
+      "end": "2026-03-03",
+      "scope": {
+        "region": "West"
+      },
+      "count": 1529
+    },
+    {
+      "id": "null_fields:2026-05-31:2026-06-03:currency",
+      "kind": "null_fields",
+      "start": "2026-05-31",
+      "end": "2026-06-03",
+      "scope": {
+        "field": "currency"
+      },
+      "count": 12605
+    },
+    {
+      "id": "invalid_payments:2026-05-11:2026-05-16:PAYMENT_COMPLETED",
+      "kind": "invalid_payments",
+      "start": "2026-05-11",
+      "end": "2026-05-16",
+      "scope": {
+        "event_type": "PAYMENT_COMPLETED"
+      },
+      "count": 242
+    },
+    {
+      "id": "missing_shipments:2026-05-21:2026-05-26:East",
+      "kind": "missing_shipments",
+      "start": "2026-05-21",
+      "end": "2026-05-26",
+      "scope": {
+        "region": "East"
+      },
+      "count": 351
+    },
+    {
+      "id": "schema_drift:2026-05-31:2026-06-03:schema_version",
+      "kind": "schema_drift",
+      "start": "2026-05-31",
+      "end": "2026-06-03",
+      "scope": {
+        "field": "schema_version"
+      },
+      "count": 12605
+    },
+    {
+      "id": "cancellation_spike:2026-04-02:2026-04-08:Electronics|South",
+      "kind": "cancellation_spike",
+      "start": "2026-04-02",
+      "end": "2026-04-08",
+      "scope": {
+        "category": "Electronics",
+        "region": "South"
+      },
+      "count": 200
+    },
+    {
+      "id": "demand_drop:2026-04-24:2026-05-07:Apparel",
+      "kind": "demand_drop",
+      "start": "2026-04-24",
+      "end": "2026-05-07",
+      "scope": {
+        "category": "Apparel"
+      },
+      "count": 11350
+    }
+  ]
+}

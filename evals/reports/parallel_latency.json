@@ -1,0 +1,14 @@
+{
+  "what": "investigation worker wall time, LLM calls scripted (excluded)",
+  "git_sha": "2747b8b",
+  "repeats": 10,
+  "sequential_s": {
+    "p50": 0.71,
+    "p95": 0.863
+  },
+  "parallel_s": {
+    "p50": 0.55,
+    "p95": 0.611
+  },
+  "speedup_p50": 1.29
+}

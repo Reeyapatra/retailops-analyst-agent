@@ -20,7 +20,14 @@ Multi-agent retail operations assistant built with LangGraph, traced and evaluat
 | M3 Thread memory (SQLite checkpointer) and follow-ups | Verified with scripted models (history reaches supervisor, thread isolation) |
 | M3 Routing accuracy on the 18-case smoke set | Not yet measured (needs MODEL_SUPERVISOR and an API key) |
 | M3 Dense embeddings (fastembed, `--extra rag`) | Code written, **never run**; downloads a model on first use |
-| Parallel investigation, data-quality subgraph, verifier, approvals, API/UI | Not started (M5-M7) |
+| M5 Data-quality checks (7 named, parameter-validated) and metric scanners (cancellation spike, demand drop) | Done and verified; scored against the manifest (see below) |
+| M5 Data Quality agent (validated check plan, fallback to all checks) | Control flow verified with a scripted model; not run with a real model |
+| M5 Parallel investigation with `Send` fan-out, merge reducer, cause classification | Verified with a scripted model; concurrency tested; narration quality not measured |
+| M5 Handoff SQL Analyst -> Data Quality via `Command` | Done and verified (scripted model, real SQL and checks) |
+| M5 Agents-as-tools: `ask_knowledge` with call budget | Done and verified (scripted models) |
+| M5 Calendar API tool (timeout, retry, cache, fallback) | Done and verified with a mocked transport; endpoint schema confirmed by one live call on 2026-10-18 |
+| M5 Anomaly *investigation* quality with a real model (E3) | Not yet measured |
+| Verifier, action proposer, human approval, audit log (M6); API and UI (M7); cloud deploy (M8) | Not started |
 | M4 Evaluators (execution accuracy, numeric groundedness, citation validity) and failure classification | Done and verified with unit tests |
 | M4 E0 baseline agent and E1 multi-agent targets, experiment runner, report generator, LangSmith dataset sync | Built; plumbing verified with scripted models. LangSmith `evaluate` path never run |
 | M4 E0 vs E1 results, failure analysis | **Not yet measured** (needs API key). `evals/reports/results.md` shows every cell as not yet measured |
@@ -57,3 +64,16 @@ Reading this honestly: the questions use the documents' own vocabulary and the s
 4. Full: `make eval-full` (E0 and E1, 3 repeats each over 31 questions, then the results table). Add `--langsmith` to the `run_eval` commands to sync the dataset and log experiments named `retailops-E#-<git sha>`.
 
 Expect roughly 31 x 3 x 2 system runs; check provider pricing first. Results are written to `evals/reports/runs/` and summarised in `evals/reports/results.md`; the failure analysis must be written from those runs, not before.
+
+## Measured offline: anomaly detectors (no language model)
+
+`python -m evals.run_detectors --sweep-seeds 1,2,3,4,5 --write-report` scores the deterministic tools (7 DQ checks + 2 statistical scanners) against the ground-truth manifest. Source: `evals/reports/anomaly_detectors.json`.
+
+| Dataset | Anomalies found | Scope correct | Cause class correct (data vs business) | Precision | Decoy false alarms |
+|---|---|---|---|---|---|
+| Seed 42 (the default data) | 7 / 7 | 7 / 7 | 7 / 7 | 8 findings, all explained | 0 / 2 |
+| Seeds 1-5 (same settings, regenerated data) | 7 / 7 each | all | all | all explained | 0 each |
+
+How to read this: the data is synthetic with a clean baseline, so a perfect score shows the tools work on this generator, not that they would on messy production data (real data needs seasonality-aware baselines and noisy thresholds). Window edges from the rolling scanners are approximate (about 2 days). The scanners' thresholds were chosen with knowledge of the injected magnitudes; the multi-seed sweep checks seed overfitting only. This measures the tools, not an agent's investigation, which is not yet measured.
+
+Investigation worker latency, parallel `Send` fan-out vs the same workers in sequence (10 repeats, model calls scripted so they are excluded): p50 0.71 s sequential vs 0.55 s parallel (1.29x), p95 0.86 s vs 0.61 s. The gain is modest because the data-quality suite dominates and the other workers are short. Source: `evals/reports/parallel_latency.json`. End-to-end latency with a real model is not yet measured.

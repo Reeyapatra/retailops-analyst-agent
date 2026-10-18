@@ -20,7 +20,7 @@ from retailops.agents.sql_analyst import SQLDraft, SQLSummary
 from retailops.agents.supervisor import RouteDecision, route
 from retailops.data.generate import GenConfig, generate
 from retailops.data.load import build_warehouse
-from retailops.graph import DECLINE, MAX_INPUT_CHARS, UNAVAILABLE, build_app, chat
+from retailops.graph import DECLINE, MAX_INPUT_CHARS, build_app, chat
 from retailops.rag.chunking import chunk_directory
 from retailops.rag.retriever import Retriever, VectorIndex
 from retailops.tools.sql import SqlRunner
@@ -112,14 +112,12 @@ def test_unknown_topic_abstains_without_calling_the_knowledge_model(
     assert r.status == "abstained" and r.citations == [] and kn.calls == []
 
 
-def test_out_of_scope_and_unavailable_are_explicit(runner: SqlRunner, retriever: Retriever) -> None:
-    app, _, sql, kn = make_app(
-        runner, retriever, [decision("out_of_scope"), decision("anomaly_investigation")]
-    )
+def test_out_of_scope_is_declined_without_calling_a_specialist(
+    runner: SqlRunner, retriever: Retriever
+) -> None:
+    app, _, sql, kn = make_app(runner, retriever, [decision("out_of_scope")])
     a = chat(app, "Drop the orders table", "t-oos")
-    b = chat(app, "Why did revenue fall in March?", "t-anom")
     assert (a.status, a.answer) == ("declined", DECLINE)
-    assert (b.status, b.answer) == ("unsupported", UNAVAILABLE)
     assert sql.calls == [] and kn.calls == []
 
 

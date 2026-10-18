@@ -166,7 +166,7 @@ def build_e1(
             raise
         except Exception as e:
             return _error_output(e, started)
-        ev = resp.evidence[0] if resp.evidence else None
+        ev = next((e for e in resp.evidence if e.get("kind", "sql") == "sql"), None)
         return {
             "answer": resp.answer,
             "final_rows": ev["rows"] if ev else None,
