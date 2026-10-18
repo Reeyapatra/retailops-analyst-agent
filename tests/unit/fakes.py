@@ -7,6 +7,9 @@ from __future__ import annotations
 
 from typing import Any
 
+from langchain_core.language_models.chat_models import BaseChatModel
+from langchain_core.messages import AIMessage
+from langchain_core.outputs import ChatGeneration, ChatResult
 from pydantic import BaseModel
 
 
@@ -17,6 +20,28 @@ class ScriptedLLM:
 
     def with_structured_output(self, schema: type[BaseModel]) -> _Bound:
         return _Bound(self, schema)
+
+
+class FakeToolModel(BaseChatModel):
+    """Chat model that replays scripted AIMessages (with tool calls) for create_agent tests."""
+
+    script: list[AIMessage]
+    seen: list[list[Any]] = []
+
+    @property
+    def _llm_type(self) -> str:
+        return "fake-tool-model"
+
+    def bind_tools(self, tools: Any, **kwargs: Any) -> FakeToolModel:
+        return self
+
+    def _generate(
+        self, messages: list[Any], stop: Any = None, run_manager: Any = None, **kwargs: Any
+    ) -> ChatResult:
+        self.seen.append(list(messages))
+        if not self.script:
+            raise AssertionError("FakeToolModel script exhausted")
+        return ChatResult(generations=[ChatGeneration(message=self.script.pop(0))])
 
 
 class _Bound:

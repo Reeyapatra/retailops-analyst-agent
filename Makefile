@@ -21,11 +21,13 @@ lint:
 	uv run ruff format --check .
 	uv run mypy
 
-eval-smoke:
-	@echo "make eval-smoke: not implemented until M4" && exit 1
+eval-smoke:  # needs MODEL_* and a provider key; 10 questions, 1 repeat
+	uv run python -m evals.run_eval --experiment E1 --limit 10 --repeats 1
 
-eval-full:
-	@echo "make eval-full: not implemented until M4" && exit 1
+eval-full:  # needs MODEL_* and a provider key; add --langsmith to the run_eval lines to log experiments
+	uv run python -m evals.run_eval --experiment E0 --repeats 3
+	uv run python -m evals.run_eval --experiment E1 --repeats 3
+	uv run python -m evals.report
 
 docker-build:
 	@echo "make docker-build: not implemented until M7" && exit 1

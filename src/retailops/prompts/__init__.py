@@ -12,6 +12,7 @@ PROMPT_VERSIONS: dict[str, str] = {
     "sql_summarize": "v1",
     "knowledge_answer": "v1",
     "supervisor_route": "v1",
+    "baseline_agent": "v1",
 }
 
 

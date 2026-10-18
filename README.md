@@ -21,7 +21,9 @@ Multi-agent retail operations assistant built with LangGraph, traced and evaluat
 | M3 Routing accuracy on the 18-case smoke set | Not yet measured (needs MODEL_SUPERVISOR and an API key) |
 | M3 Dense embeddings (fastembed, `--extra rag`) | Code written, **never run**; downloads a model on first use |
 | Parallel investigation, data-quality subgraph, verifier, approvals, API/UI | Not started (M5-M7) |
-| M4 Baseline evaluation | Not started |
+| M4 Evaluators (execution accuracy, numeric groundedness, citation validity) and failure classification | Done and verified with unit tests |
+| M4 E0 baseline agent and E1 multi-agent targets, experiment runner, report generator, LangSmith dataset sync | Built; plumbing verified with scripted models. LangSmith `evaluate` path never run |
+| M4 E0 vs E1 results, failure analysis | **Not yet measured** (needs API key). `evals/reports/results.md` shows every cell as not yet measured |
 | Evaluation results | Not yet measured |
 
 ## Quickstart
@@ -46,3 +48,12 @@ Retrieval on `evals/datasets/rag_gold.jsonl` (28 answerable + 8 unanswerable que
 | Held-out (7 / 2) | 1.00 | 0.929 | 1.00 | 0.00 |
 
 Reading this honestly: the questions use the documents' own vocabulary and the sets are small, so hit@5 is optimistic. The relevance score cannot separate unanswerable questions (they score up to 0.27 because words like "region" match) from answerable ones (as low as 0.11), so retrieval-level abstention is weak. The knowledge agent therefore also lets the model decline (`answerable=false`) and drops answers without valid citations; how well that works is not yet measured.
+
+## Running the real experiments (needs your keys)
+
+1. `copy .env.example .env`, then set `ANTHROPIC_API_KEY`, confirm the three `MODEL_*` names are valid for your account, and optionally `LANGSMITH_TRACING=true`, `LANGSMITH_API_KEY`, `LANGSMITH_PROJECT=retailops-eval`.
+2. `make data` then `make ingest`.
+3. Cheap checks first: `uv run python -m evals.run_sql_gold --limit 3` and `uv run python -m evals.run_routing_smoke`.
+4. Full: `make eval-full` (E0 and E1, 3 repeats each over 31 questions, then the results table). Add `--langsmith` to the `run_eval` commands to sync the dataset and log experiments named `retailops-E#-<git sha>`.
+
+Expect roughly 31 x 3 x 2 system runs; check provider pricing first. Results are written to `evals/reports/runs/` and summarised in `evals/reports/results.md`; the failure analysis must be written from those runs, not before.

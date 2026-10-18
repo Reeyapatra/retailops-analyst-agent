@@ -56,6 +56,8 @@ class RetailOpsState(TypedDict, total=False):
     final_answer: str
     confidence_note: str
     status: str
+    sql_attempts: int | None
+    last_failure_stage: str | None
 
 
 class ChatResponse(BaseModel):
@@ -67,6 +69,8 @@ class ChatResponse(BaseModel):
     evidence: list[dict[str, Any]]
     citations: list[dict[str, Any]]
     route_fallback: bool
+    sql_attempts: int | None = None
+    last_failure_stage: str | None = None  # stage of the last unsuccessful SQL attempt, if any
 
 
 def render_history(messages: list[AnyMessage]) -> str:
@@ -103,6 +107,8 @@ def build_app(
             "route_fallback": False,
             "final_answer": "",
             "confidence_note": "",
+            "sql_attempts": None,
+            "last_failure_stage": None,
         }
         if not text:
             return {
@@ -148,6 +154,12 @@ def build_app(
             "final_answer": out.answer,
             "confidence_note": out.confidence_note,
             "status": out.status,
+            "sql_attempts": len(out.attempts),
+            "last_failure_stage": (
+                next((a.stage for a in reversed(out.attempts) if a.stage != "ok"), None)
+                if out.status != "ok"
+                else None
+            ),
         }
 
     def knowledge(state: RetailOpsState, config: RunnableConfig) -> dict[str, Any]:
@@ -219,11 +231,14 @@ def chat(
     thread_id: str,
     *,
     scenario_id: str | None = None,
+    callbacks: list[Any] | None = None,
 ) -> ChatResponse:
     """Run one conversation turn on a thread. State persists via the app's checkpointer."""
     new_trace_id()
     config = run_config("retailops_chat", thread_id=thread_id, scenario_id=scenario_id)
     config["configurable"] = {"thread_id": thread_id}
+    if callbacks:
+        config["callbacks"] = callbacks
     final = app.invoke({"messages": [HumanMessage(message)]}, config=config)  # type: ignore[arg-type]
     return ChatResponse(
         thread_id=thread_id,
@@ -234,4 +249,6 @@ def chat(
         evidence=final.get("evidence", []),
         citations=final.get("citations", []),
         route_fallback=final.get("route_fallback", False),
+        sql_attempts=final.get("sql_attempts"),
+        last_failure_stage=final.get("last_failure_stage"),
     )
