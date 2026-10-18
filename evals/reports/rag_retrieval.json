@@ -1,0 +1,30 @@
+{
+  "embedder": "tfidf",
+  "min_score": 0.12,
+  "k": 5,
+  "n_chunks": 47,
+  "all": {
+    "n_answerable": 28,
+    "n_unanswerable": 8,
+    "hit@5": 1.0,
+    "mrr": 0.946,
+    "answered_when_answerable": 0.964,
+    "abstained_when_unanswerable": 0.25
+  },
+  "dev": {
+    "n_answerable": 21,
+    "n_unanswerable": 6,
+    "hit@5": 1.0,
+    "mrr": 0.952,
+    "answered_when_answerable": 0.952,
+    "abstained_when_unanswerable": 0.333
+  },
+  "held_out": {
+    "n_answerable": 7,
+    "n_unanswerable": 2,
+    "hit@5": 1.0,
+    "mrr": 0.929,
+    "answered_when_answerable": 1.0,
+    "abstained_when_unanswerable": 0.0
+  }
+}

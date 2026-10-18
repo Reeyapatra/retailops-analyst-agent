@@ -10,6 +10,8 @@ PROMPT_DIR = Path(__file__).parent
 PROMPT_VERSIONS: dict[str, str] = {
     "sql_generate": "v1",
     "sql_summarize": "v1",
+    "knowledge_answer": "v1",
+    "supervisor_route": "v1",
 }
 
 
